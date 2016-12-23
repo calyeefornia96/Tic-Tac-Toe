@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+
+body{
+	background-image: url(http://www.publicdomainpictures.net/pictures/120000/velka/simple-background-soft.jpg);
+}
+
+.pos1,.pos2, .pos4,.pos5,.pos7,.pos8{
+	border-right: 4px ridge black;
+}
+
+.pos1,.pos2,.pos3,.pos4,.pos5,.pos6{
+	border-bottom: 4px ridge black;
+}
+
+.board{
+	margin: 20% auto;
+	width: 70%;
+	height: 500px;
+	text-align: center;
+	position: relative;
+}
+
+
+.row{
+	height: 33.33333%;
+	width: 100%;
+	margin: 0 auto;
+}
+
+.box{
+	height: 100%;
+	box-sizing: border-box;
+	transform-style: preserve-3d;
+}
+
+.box:hover{
+	cursor: pointer;
+}
+
+.box p{
+	font-size: 20px;
+	font-weight: 500;
+	margin: 0 auto;
+}
+
+p.player{
+	color: blue;
+}
+
+p.computer{
+	color: red;
+}
+
+.overlay{
+	border-radius: 4px;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: linear-gradient(to left, #FF5F6D , #FFC371);
+	margin: 10% auto;
+	height: 70%;
+	width: 100%;
+	position: absolute;
+	z-index: 5;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	
+	
+}
+
+.overlay-content{
+	font-family: 'Open Sans', sans-serif;
+
+}
+
+.overlay-content button{
+	background: #eee;
+	color: #666;
+	font-size: 24px;
+	border: 1px solid rgba(0,0,0,0.3);
+	border-bottom-width: 3px;
+	border-radius: 5px;
+	padding: 10px 30px;
+
+}
+
+.overlay-content button:hover{
+	background-color: #e3e3e3;
+	border-color: rgba(0,0,0,0.5);
+}
+
+.overlay-content button:active{
+	background-color: #CCC;
+	border-color: rgba(0,0,0,0.9);
+}
