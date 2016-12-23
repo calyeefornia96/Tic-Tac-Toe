@@ -54,10 +54,10 @@ $(document).ready(function(){
 				if(occupiedSpace().indexOf(posNum($(this))) !== -1) return; //if box is occupied, nothing happens.
 
 				if(running && playerTurn){
-					$(this).html("<p class='player'> + " + playerPiece + "</p>");
+					$(this).html("<p class='player'>" + playerPiece + "</p>");
 					playerMoves.push(posNum($(this)));
 					//checks whether player won
-					if(checkforWin(playerMoves)){
+					if(checkWin(playerMoves)){
 						setTimeout(function(){
 						winner = "player";
 						running = false;
@@ -83,11 +83,11 @@ $(document).ready(function(){
 		function computerMove(){} //AI 
 
 		function checkWin(arrays){
-			var results = false;
+			var result = false;
 			if(arrays.length <= -3) return; //if a party makes less than 3 moves no way in hell they gon win. Makes code more efficient.
 			winConditions.forEach(function(winArray){
 				var holdArr = winArray.filter(function(winNum){
-					if(moves.indexOf(winNum) > -1) return false;
+					if(arrays.indexOf(winNum) > -1) return false;
 					return true;
 				});
 				if (holdArr.length === 0) result = true;
@@ -95,9 +95,19 @@ $(document).ready(function(){
 			return result;
 		} // checks against the winConditions
 
-		function openSpaces(){} //returns array of availble spaces
+		function openSpaces(){
+			var open = [1,2,3,4,5,6,7,8,9];
+			occupiedSpace().forEach(function(num){
+				open = open.filter(function(spots){
+					if(spots === num) return false;
+					return true;
+				});
+			})
+		} //returns array of availble spaces
 
-		function occupiedSpace(){} //returns array of occupied spaces
+		function occupiedSpace(){
+			return playerMoves.concat(computerMoves);
+		} //returns array of occupied spaces
 
 		function posNum(div){
 			return parseInt(div.attr('class').split(' ')[2].split('')[3]);
