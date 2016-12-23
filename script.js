@@ -1,7 +1,8 @@
 $(document).ready(function(){
 
 	function Game() {
-		var moves,
+		var _this = this,
+		moves,
 		running,
 		playerPiece,
 		computerPiece,
@@ -44,10 +45,39 @@ $(document).ready(function(){
 		}
 
 		function startGame(){
-			running = true;
+			running = true; 
+			//player doesn't go first, computer does
 			if(!playerTurn){
 				setTimeout(computerMove,500);
 			}
+			box.click(function(){
+				if(occupiedSpace().indexOf(posNum($(this))) !== -1) return; //if box is occupied, nothing happens.
+
+				if(running && playerTurn){
+					$(this).html("<p class='player'> + " + playerPiece + "</p>");
+					playerMoves.push(posNum($(this)));
+					//checks whether player won
+					if(checkforWin(playerMoves)){
+						setTimeout(function(){
+						winner = "player";
+						running = false;
+						announcement.text("you won!");
+						_this.init(); //restarts the game
+					});}
+
+					moves--; //no winner, continues.
+					if(moves === 0){
+						setTimeout(function(){
+						winner="draw";
+						running = false;
+						announcement.text("Draw!");
+						_this.init();
+					});} //no more moves left, draw and restart
+					playerTurn = false;
+					setTimeout(computerMove, 500);
+				}
+			});
+
 		} // initialises the game
 
 		function computerMove(){} //AI 
@@ -56,7 +86,7 @@ $(document).ready(function(){
 
 		function openSpaces(){} //returns array of availble spaces
 
-		function occupiedSpaces(){} //returns array of occupied spaces
+		function occupiedSpace(){} //returns array of occupied spaces
 
 		function posNum(div){
 			return parseInt(div.attr('class').split(' ')[2].split('')[3]);
