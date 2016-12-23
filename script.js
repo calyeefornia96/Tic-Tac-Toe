@@ -82,7 +82,18 @@ $(document).ready(function(){
 
 		function computerMove(){} //AI 
 
-		function checkWin(){} // checks against the winConditions
+		function checkWin(arrays){
+			var results = false;
+			if(arrays.length <= -3) return; //if a party makes less than 3 moves no way in hell they gon win. Makes code more efficient.
+			winConditions.forEach(function(winArray){
+				var holdArr = winArray.filter(function(winNum){
+					if(moves.indexOf(winNum) > -1) return false;
+					return true;
+				});
+				if (holdArr.length === 0) result = true;
+			});
+			return result;
+		} // checks against the winConditions
 
 		function openSpaces(){} //returns array of availble spaces
 
