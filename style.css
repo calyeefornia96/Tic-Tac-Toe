@@ -38,9 +38,11 @@ body{
 }
 
 .box p{
-	font-size: 20px;
+	font-size: 72px;
 	font-weight: 500;
-	margin: 0 auto;
+	display: flex;
+	justify-content: center;
+	
 }
 
 p.player{
@@ -66,7 +68,8 @@ p.computer{
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	
+	display: none;
+
 	
 }
 

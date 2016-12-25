@@ -41,7 +41,6 @@ $(document).ready(function() {
 
         function choosePiece() {
             if (!running) {
-                overlay.toggle("clip");
                 chooseButton.on("click", function() {
                     playerPiece = $(this).text();
                     computerPiece = playerPiece === 'X' ? 'O' : 'X';
@@ -71,7 +70,7 @@ $(document).ready(function() {
                             running = false;
                             announcement.text("you won!");
                             _this.init(); //restarts the game
-                        }, 600);
+                        });
                     }
 
                     moves--; //no winner, continues.
@@ -81,7 +80,7 @@ $(document).ready(function() {
                             running = false;
                             announcement.text("Draw!");
                             _this.init();
-                        }, 600);
+                        }, 500);
                     } //no more moves left, draw and restart
                     playerTurn = false;
                     setTimeout(computerMove, 500);
@@ -89,96 +88,57 @@ $(document).ready(function() {
             });
 
         } // initialises the game
+
         function computerMove() {
-            if (running && !playerTurn) {
-                var avail = openSpaces();
-                var movedYet = false;
-                var win_test = [];
-                var block_test = [];
-                var potentials = [];
 
-                // if the immediate next move causes the computer to win, the computer places it.
-                for (var i = 0; i < avail.length; i++) {
-                    computerMoves.forEach(function(num) {
-                        win_test.push(num);
-                    });
-                    win_test.push(avail[i]);
-                    if (checkWin(win_test)) {
-                        movedYet = true;
-                        placeComputer(avail[i]);
-                        break;
-                    }
-                    win_test = [];
-                }
-                // if the immediate next move causes the player to win, the computer blocks it.
-                if (!movedYet) {
-                    for (var x = 0; x < avail.length; x++) {
-                        playerMoves.forEach(function(num) {
-                            block_test.push(num);
-                        });
-                        block_test.push(avail[x]);
-                        if (checkWin(block_test)) {
-                            movedYet = true;
-                            placeComputer(avail[x]);
-                            break;
-                        }
-                        block_test = [];
-                    }
-                }
-                if (!movedYet) {
-                    //if computer has alr occupied a spot, it examines spot that gives it a chance to win
-                    if (computerMoves.length > 0) {
-                        computerMoves.forEach(function(compMove) {
-                            winConditions.forEach(function(winCond) {
-                                if (winCond.indexOf(compMove) > -1) potentials.push(winCond);
-                            });
-                        });
+            var possibleMoves = [];
+            var computerTrial = computerMoves;
+            var playerTrial = playerMoves;
+            var bestVal = 0;
+            var avail = openSpaces();
+
+            function minimax(playerTurn, moves) {
+
+                if (moves === 0) {
+                    if (checkWin(computerTrial)) {
+                        return 10;
+                    } else if (checkWin(playerTrial)) {
+                        return -10;
                     } else {
-                        potentials = winConditions;
+                        return 0;
                     }
-                    if (potentials.length > 0) {
-                        potentials = potentials.reduce(function(a, b) {
-                            return a.concat(b);
-                        });
-                        potentials = potentials.filter(function(potential) {
-                            return avail.includes(potential);
-                        });
+                }
+
+                var avail = openSpaces();
+                var possible = avail;
+                if (!playerTurn) { //computer turn
+                    bestVal = -1000;
+                    for (var i = 0; i < avail.length; i++) {
+                        computerTrial.push(possible[i]);
+                        possible.splice(i, 1);
+                        var cBest = minimax(true, moves--);
+                        if (cBest > bestVal) {
+                            bestVal = cBest;
+                            possibleMoves.push(possible[i]);
+                        }
                     }
-                    placeComputer(potentials[0]);
+                }
+                if (playerTurn) { //player turn
+                    bestVal = 1000;
+                    for (var j = 0; j < avail.length; j++) {
+                        playerTrial.push(possible[j]);
+                        possible.splice(j, 1);
+                        var pBest = minimax(false, moves--);
+                        if (pBest < bestVal) {
+                            bestVal = pBest;
+                        }
+                    }
                 }
             }
-            if (checkWin(computerMoves)) {
-                setTimeout(function() {
-                    winner = "computer";
-                    running = false;
-                    announcement.text("Computer Wins!");
-                    _this.init();
-                }, 600);
-                return;
-            }
-            // if no win, continue on...
-            moves--;
-            // if there are no moves left, the result is a draw
-            if (moves === 0) {
-                setTimeout(function() {
-                    winner = "draw";
-                    running = false;
-                    announcement.text("Draw!");
-                    _this.init();
-                }, 600);
-                return;
-            }
-            // if computer hasn't won and it's not a draw, allow player to select another space
-            playerTurn = true;
-        }
 
-
-        function placeComputer(num) {
-            var spot = $(".pos" + num);
-            spot.html("<p class='computer'>" + computerPiece + "</p>");
-            computerMoves.push(num);
-        }
-
+            //minimax(playerTurn,moves)
+            $('.pos' + chosen).html("<p class='computer'>" + computerPiece + "</p>");
+        } //AI
         function checkWin(arrays) {
             var result = false;
             if (arrays.length <= -3) return; //if a party makes less than 3 moves no way in hell they gon win. Makes code more efficient.
@@ -216,4 +176,4 @@ $(document).ready(function() {
 
     var ticTacToe = new Game();
     ticTacToe.init();
-});
+})
